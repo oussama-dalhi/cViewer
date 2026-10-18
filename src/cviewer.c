@@ -31,21 +31,43 @@ int main(void)
     }
 
    bool app_running = true;
-   while (app_running) {
+   while (app_running) 
+   {
        SDL_Event event;
-           while (SDL_PollEvent(&event)) 
-                {  
-                    if(event.type == SDL_QUIT)
-                    {
-                        app_running = false;
-                    }
-                    // decide what to do with this event.
-                }
-                           // update game state, draw the current frame
-            }
+       while (SDL_PollEvent(&event)) 
+       {  
+           if(event.type == SDL_QUIT)
+           {
+               app_running = false;
+           }
+       }
+       Uint8 r = 30;
+       Uint8 g = 30;
+       Uint8 b = 30;
+       Uint8 a = SDL_ALPHA_OPAQUE;
+       int rendercolor = SDL_SetRenderDrawColor(windowrender, r, g, b, a);
+       if (rendercolor != 0)
+       {
+            printf("%s\n", SDL_GetError());
+            SDL_DestroyRenderer(windowrender);
+            SDL_DestroyWindow(window);
+            SDL_Quit();
+            return -1;
+       }
+       int cleartarget = SDL_RenderClear(windowrender);
+       if (cleartarget != 0)
+       {
+            printf("%s\n", SDL_GetError());
+            SDL_DestroyRenderer(windowrender);
+            SDL_DestroyWindow(window);
+            SDL_Quit();
+            return -1;
+       }
+       SDL_RenderPresent(windowrender);
+   }
             
-    SDL_DestroyWindow(window);
     SDL_DestroyRenderer(windowrender);
+    SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
 }
