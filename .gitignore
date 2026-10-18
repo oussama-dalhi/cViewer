@@ -1,0 +1,6 @@
+src/cviewer
+cview
+
+*.o
+*.swp
+*.swo
