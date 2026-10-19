@@ -1,5 +1,5 @@
-src/cviewer
-cview
+src/cViewer
+cViewer
 
 *.o
 *.swp
