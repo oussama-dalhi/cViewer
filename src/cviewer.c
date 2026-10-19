@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#define STB_IMAGE_IMPLEMENTAION
+#include <stb_image.h>
 
 int main(void)
 {
-    int sdlinit = SDL_Init(SDL_INIT_VIDEO);
-    if (sdlinit != 0)
+    int sdl_init_result = SDL_Init(SDL_INIT_VIDEO);
+    if (sdl_init_result != 0)
     {
         printf("%s\n", SDL_GetError());
         return -1;
@@ -21,8 +23,8 @@ int main(void)
         return -1;
     }
 
-    SDL_Renderer *windowrender = SDL_CreateRenderer(window, -1, 0);
-    if(windowrender == NULL)
+    SDL_Renderer *windowrenderer = SDL_CreateRenderer(window, -1, 0);
+    if(windowrenderer == NULL)
     {
         printf("%s\n", SDL_GetError());
         SDL_DestroyWindow(window);
@@ -41,32 +43,32 @@ int main(void)
                app_running = false;
            }
        }
-       Uint8 r = 30;
-       Uint8 g = 30;
-       Uint8 b = 30;
-       Uint8 a = SDL_ALPHA_OPAQUE;
-       int rendercolor = SDL_SetRenderDrawColor(windowrender, r, g, b, a);
-       if (rendercolor != 0)
+       Uint8 red = 30;
+       Uint8 green = 30;
+       Uint8 blue = 30;
+       Uint8 alpha = SDL_ALPHA_OPAQUE;
+       int color_result = SDL_SetRenderDrawColor(windowrenderer, red, green, blue, alpha);
+       if (color_result != 0)
        {
             printf("%s\n", SDL_GetError());
-            SDL_DestroyRenderer(windowrender);
+            SDL_DestroyRenderer(windowrenderer);
             SDL_DestroyWindow(window);
             SDL_Quit();
             return -1;
        }
-       int cleartarget = SDL_RenderClear(windowrender);
-       if (cleartarget != 0)
+       int clear_result = SDL_RenderClear(windowrenderer);
+       if (clear_result != 0)
        {
             printf("%s\n", SDL_GetError());
-            SDL_DestroyRenderer(windowrender);
+            SDL_DestroyRenderer(windowrenderer);
             SDL_DestroyWindow(window);
             SDL_Quit();
             return -1;
        }
-       SDL_RenderPresent(windowrender);
+       SDL_RenderPresent(windowrenderer);
    }
             
-    SDL_DestroyRenderer(windowrender);
+    SDL_DestroyRenderer(windowrenderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
