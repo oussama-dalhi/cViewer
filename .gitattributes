@@ -1,0 +1,2 @@
+src/cViewer linguist-language=C
+include/stb_image.h linguist-vendored
