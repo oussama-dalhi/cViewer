@@ -104,7 +104,25 @@ int main(int argc, char *argv[])
             printf("%s\n", SDL_GetError());
             app_running = false;
        }
-       int render_cp = SDL_RenderCopy(windowrenderer, texture, NULL, NULL);
+	   int w;
+	   int h;
+
+	   int size_result = SDL_GetRendererOutputSize(windowrenderer, &w, &h);
+	   if (size_result != 0)
+	   {
+		     printf("%s\n", SDL_GetError());
+			 app_running = false;
+	   } 
+	   
+	   		double scale_factor = fmin((double)w / width, (double)h / height);
+	   		SDL_Rect dest;
+	   		dest.w = (int)(scale_factor * width);
+	   		dest.h = (int)(scale_factor * height);
+	   		dest.x = (w - dest.w) / 2;
+	   		dest.y = (h - dest.h) / 2;
+
+
+       int render_cp = SDL_RenderCopy(windowrenderer, texture, NULL, &dest);
        if(render_cp != 0)
        {
             printf("%s\n", SDL_GetError());
