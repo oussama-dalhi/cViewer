@@ -10,13 +10,18 @@
 int main(int argc, char *argv[])
 {
     int exit_status = EXIT_SUCCESS;
+    unsigned char *pixels = NULL;
+    SDL_Surface *surface = NULL;
+    SDL_Window *window = NULL;
+    SDL_Renderer *windowrenderer = NULL;
+    SDL_Texture *texture = NULL;
     if(argc != 2)
     {
         fprintf(stderr, "Usage: ./cViewer <imagepath>\n");
         return EXIT_FAILURE;
     }
     int width, height;
-    unsigned char *pixels = stbi_load(argv[1], &width, &height, NULL, 4);
+    pixels = stbi_load(argv[1], &width, &height, NULL, 4);
     if(pixels == NULL)
     {
         fprintf(stderr, "%s\n", stbi_failure_reason());
@@ -26,58 +31,52 @@ int main(int argc, char *argv[])
     if (sdl_init_result != 0)
     {
         fprintf(stderr, "%s\n", SDL_GetError());
-        stbi_image_free(pixels);
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
+        goto cleanup;
     }
     int depth = 32;
     int pitch = width * 4;
-    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels, 
+    surface = SDL_CreateRGBSurfaceWithFormatFrom(pixels, 
             width, height, depth, pitch, SDL_PIXELFORMAT_RGBA32);
     if(surface == NULL)
     {
         fprintf(stderr, "%s\n", SDL_GetError());
-        stbi_image_free(pixels);
-        SDL_Quit();
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
+        goto cleanup;
     }
 
-    SDL_Window *window = SDL_CreateWindow("cViewer", SDL_WINDOWPOS_CENTERED,
+    window = SDL_CreateWindow("cViewer", SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED, 1000, 700, SDL_WINDOW_RESIZABLE);
 
     if (window == NULL)
     {
         fprintf(stderr, "%s\n", SDL_GetError());
-        SDL_FreeSurface(surface);
-        stbi_image_free(pixels);
-        SDL_Quit();
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
+        goto cleanup;
     }
 
-    SDL_Renderer *windowrenderer = SDL_CreateRenderer(window, -1, 0);
+    windowrenderer = SDL_CreateRenderer(window, -1, 0);
     if(windowrenderer == NULL)
     {
         fprintf(stderr, "%s\n", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_FreeSurface(surface);
-        stbi_image_free(pixels);
-        SDL_Quit();
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
+        goto cleanup;
     }
 
-    SDL_Texture *texture =  SDL_CreateTextureFromSurface(windowrenderer, 
+    texture =  SDL_CreateTextureFromSurface(windowrenderer, 
             surface);
     if(texture == NULL)
     {
         fprintf(stderr, "%s\n", SDL_GetError());
-        SDL_DestroyRenderer(windowrenderer);
-        SDL_DestroyWindow(window);
-        SDL_FreeSurface(surface);
-        stbi_image_free(pixels);
-        SDL_Quit();
-        return EXIT_FAILURE;
+        exit_status = EXIT_FAILURE;
+        goto cleanup;
     }
+
     SDL_FreeSurface(surface);
+    surface = NULL;
+
     stbi_image_free(pixels);
+    pixels = NULL;
 
     bool app_running = true;
     while (app_running) 
@@ -141,10 +140,28 @@ int main(int argc, char *argv[])
 
         SDL_RenderPresent(windowrenderer);
     }
-
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(windowrenderer);
-    SDL_DestroyWindow(window);
+    
+cleanup:
+    if(texture != NULL)
+    {
+        SDL_DestroyTexture(texture);
+    }
+    if(windowrenderer != NULL)
+    {
+        SDL_DestroyRenderer(windowrenderer);
+    }
+    if(window != NULL)
+    {
+        SDL_DestroyWindow(window);
+    }
+    if(surface != NULL)
+    {
+        SDL_FreeSurface(surface);
+    }
+    if(pixels != NULL)
+    {
+        stbi_image_free(pixels);
+    }
     SDL_Quit();
     return exit_status;
 }
