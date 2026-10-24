@@ -5,15 +5,17 @@ A lightweight image viewer written in C using SDL2 and stb_image.
 
 ## Screenshot
 
-![cViewer displaying an image](screenshots/cviewer.png)
+![cViewer displaying an image](screenshots/cViewer.jpg)
 
 ## Features
 
-- Load and display images from a file path.
+- Load and display images from a command-line file path.
 - Support common image formats through stb_image.
 - Render images in an SDL2 window.
-- Allow the window to be resized.
-- Report errors when image loading or SDL initialization fails.
+- Resize the window while preserving the image's aspect ratio.
+- Center the image within the window.
+- Handle image-loading, SDL initialization, and rendering errors.
+- Return a failure exit status when an error occurs.
 
 ## Requirements
 
@@ -23,72 +25,78 @@ A lightweight image viewer written in C using SDL2 and stb_image.
 - stb_image (included in `include/`)
 ld
 
-Clone the repository and enter the project directory:
+## Installation
+
+Clone the repository and navigate to the project directory:
 
 ```bash
 git clone https://github.com/oussama-dalhi/cViewer.git
 cd cViewer
 ```
 
-Build the project:
+## Build
+
+Compile the project using the included Makefile:
 
 ```bash
 make
 ```
 
+The executable will be created at `src/cViewer`.
+
+To remove the compiled executable, run:
+
+```bash
+make clean
+```
+
 ## Usage
 
-Run test images:
+Run the default test image configured in the Makefile:
 
 ```bash
 make run
 ```
 
-
-Open any other image by passing its path as a command-line argument:
+To open a specific image, pass its path as a command-line argument:
 
 ```bash
 ./src/cViewer images/wallpaper.png
 ```
 
-You can also open another image:
+
+You can also provide an image using an absolute or relative path:
 
 ```bash
-./src/cViewer images/nature.jpg
+./src/cViewer /path/to/image.png
 ```
 
-To remove the compiled executable:
-
-```bash
-make clean
-```
+If the image cannot be loaded or an SDL operation fails, cViewer reports the error and exits with a failure status.
 
 ## Project Structure
 
 ```text
 cViewer/
 ├── images/          # Sample images
-├── include/         # Third-party image-loading header
+├── include/         # Third-party headers (stb_image)
 ├── src/             # C source code
 ├── screenshots/     # Application screenshots
 ├── Makefile         # Build and run commands
-├── .gitignore
-├── .gitattributes
-└── README.md
-```
-
+├── .gitignore       # Git ignore rules
+├── .gitattributes   # Git file attributes
+├── LICENSE          # MIT License
+└── README.md        # Project documentation
+ ```
 ## Future Improvements
 
-- Preserve image aspect ratio and center the image in the window.
-- Handle window resizing without distorting the image.
-- Add zoom controls and keyboard shortcuts.
-- Improve error handling and input validation.
-- Support navigating between images in a directory.
+ - Navigate between previous and next images in the current directory.
+ - Add keyboard shortcuts for image navigation.
+ - Implement zoom controls.
 
 ## Third-Party Libraries
 
-- [stb_image](https://github.com/nothings/stb) — image loading.
-- [SDL2](https://www.libsdl.org/) — window management and rendering.
+ - [stb_image](https://github.com/nothings/stb) — loads image files into pixel data.
+ - [SDL2](https://www.libsdl.org/) — handles window creation, events, and rendering.
 
 ## License
 
